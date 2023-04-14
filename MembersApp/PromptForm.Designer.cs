@@ -115,6 +115,7 @@
             Margin = new Padding(2);
             Name = "PromptForm";
             Padding = new Padding(8);
+            StartPosition = FormStartPosition.CenterParent;
             Text = "PromptForm";
             tableLayoutPanel1.ResumeLayout(false);
             tableLayoutPanel1.PerformLayout();
