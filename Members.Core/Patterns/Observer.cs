@@ -21,7 +21,8 @@ namespace Members.Core.Patterns
 
         public void Unsubscribe()
         {
-            if ( Observable != null ) Observable.Notify -= Handler;
+            if ( Observable == null ) return;
+            Observable.Notify -= Handler;
         }
 
     }
