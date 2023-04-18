@@ -34,5 +34,11 @@ namespace Members.Core.Commands
         }
 
         public void Redo() => Do();
+
+        public void Cancel()
+        {
+            foreach ( var command in Commands )
+                command.Cancel();
+        }
     }
 }

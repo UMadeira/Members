@@ -12,37 +12,33 @@ namespace MembersApp.Commands
 {
     internal class AddTreeNodeCommand : ICommand
     {
-        /*
-            var node = nodes.Add(member.Name);
-            node.ImageKey = node.SelectedImageKey = member.GetType().Name;
-
-            node.Subscribe(member, (s, a) => node.Text = member.Name);
-
-         */
         public AddTreeNodeCommand( TreeNodeCollection nodes, Member member )
         { 
             Nodes  = nodes;
-            Member = member;
+
+            Node = new TreeNode( member.Name );
+            Node.ImageKey = Node.SelectedImageKey = member.GetType().Name;
+            Node.Subscribe( member, (s, a) => Node.Text = member.Name );
         }
 
         public TreeNodeCollection Nodes { get; set; }
         public TreeNode Node { get; set; }
-        public Member Member { get; set; }
 
         public void Do()
         {
-            Node = Nodes.Add(Member.Name);
-            Node.ImageKey = Node.SelectedImageKey = Member.GetType().Name;
-
-            Node.Subscribe( Member, (s, a) => Node.Text = Member.Name);
+            Nodes.Add( Node );
         }
 
         public void Undo()
         {
-            Nodes.Remove(Node);
-            Node.Unsubscribe();
+            Nodes.Remove( Node );
         }
 
         public void Redo() => Do();
+
+        public void Cancel() 
+        {
+            Node.Unsubscribe();
+        }
     }
 }

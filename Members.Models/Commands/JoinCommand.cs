@@ -31,5 +31,6 @@ namespace Members.Models.Commands
 
         public void Redo() => Do();
 
+        public void Cancel() {}
     }
 }

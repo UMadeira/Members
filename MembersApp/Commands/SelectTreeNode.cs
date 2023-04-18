@@ -7,27 +7,25 @@ using System.Threading.Tasks;
 
 namespace MembersApp.Commands
 {
-    internal class RemoveTreeNodeCommand : ICommand
+    public class SelectTreeNode : ICommand
     {
-        public RemoveTreeNodeCommand( TreeNode node ) 
-        { 
+        public SelectTreeNode( TreeNode node ) 
+        {
             Node = node;
-            Nodes = node.Parent?.Nodes ?? node.TreeView.Nodes;
+            View = node.TreeView;
         }
 
-        private TreeNodeCollection Nodes { get; set; }
-
+        private TreeView View { get; set; }
         private TreeNode Node { get; set; }
 
         public void Do()
         {
-            Node.Remove();
+            var node = View.SelectedNode; 
+            View.SelectedNode = Node;
+            Node = node;
         }
 
-        public void Undo()
-        {
-            Nodes.Add( Node );
-        }
+        public void Undo() => Do();
 
         public void Redo() => Do();
 

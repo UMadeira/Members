@@ -338,6 +338,7 @@
             undoToolStripButton.ImageTransparentColor = Color.Magenta;
             undoToolStripButton.Name = "undoToolStripButton";
             undoToolStripButton.Size = new Size(40, 28);
+            undoToolStripButton.ToolTipText = "Undo";
             undoToolStripButton.Click += OnUndo;
             // 
             // redoToolStripButton
@@ -349,6 +350,7 @@
             redoToolStripButton.Name = "redoToolStripButton";
             redoToolStripButton.Size = new Size(40, 28);
             redoToolStripButton.Text = "redoToolStripButton";
+            redoToolStripButton.ToolTipText = "Redo";
             redoToolStripButton.Click += OnRedo;
             // 
             // toolStripSeparator7

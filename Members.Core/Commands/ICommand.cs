@@ -5,5 +5,6 @@
         void Do();
         void Undo();
         void Redo();
+        void Cancel();
     }
 }

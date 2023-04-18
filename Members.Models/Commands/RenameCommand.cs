@@ -29,5 +29,7 @@ namespace Members.Models.Commands
         public void Undo() => Do();
 
         public void Redo() => Do();
+
+        public void Cancel() { }
     }
 }

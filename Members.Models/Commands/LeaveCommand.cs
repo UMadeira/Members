@@ -1,17 +1,18 @@
 ﻿using Members.Core.Commands;
+using Members.Models.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Members.Models.Domain
+namespace Members.Models.Commands
 {
     public class LeaveCommand : ICommand
     {
         public LeaveCommand(Group group, Member member)
         {
-            Group  = group;
+            Group = group;
             Member = member;
         }
 
@@ -30,5 +31,6 @@ namespace Members.Models.Domain
 
         public void Redo() => Do();
 
+        public void Cancel() { }
     }
 }

@@ -26,7 +26,10 @@ namespace Members.Core.Commands
             if ( HasRedo )
             {
                 for ( int i = Commands.Count - 1; i > Position; i-- )
-                    Commands.RemoveAt( i );
+                {
+                    Commands[i].Cancel();
+                    Commands.RemoveAt(i);
+                }
             }
 
             Commands.Add(command);
@@ -45,6 +48,5 @@ namespace Members.Core.Commands
             if ( ! HasRedo ) return;
             Commands[++Position].Redo();
         }
-
     }
 }

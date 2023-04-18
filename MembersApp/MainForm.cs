@@ -26,7 +26,7 @@ namespace MembersApp
             groupsTreeView.AfterSelect += (s, a) =>
                 leaveButton.Enabled = groupsTreeView.HasSelectedNodeOfType<Person>();
 
-            CommandManager.Notify += (s, a) => 
+            CommandManager.Notify += (s, a) =>
                 undoToolStripButton.Enabled = CommandManager.HasUndo;
 
             CommandManager.Notify += (s, a) =>
@@ -116,11 +116,13 @@ namespace MembersApp
             var person = peopleTreeView.SelectedNode?.GetSemantic<Person>();
             if (person == null) return;
 
+            if (group.Members.Contains(person)) return;
+
             CommandManager.Execute(
                 new MacroCommand(
                     new JoinCommand(group, person),
                     new AddTreeNodeCommand(
-                        groupsTreeView.SelectedNode.Nodes, person ) ) );
+                        groupsTreeView.SelectedNode.Nodes, person)));
 
             //group.Members.Add(person);
             //AddMemberNode(groupsTreeView.SelectedNode.Nodes, person);
@@ -128,7 +130,7 @@ namespace MembersApp
 
         private void OnLeaveGroup(object sender, EventArgs e)
         {
-            var person = peopleTreeView.SelectedNode?.GetSemantic<Person>();
+            var person = groupsTreeView.SelectedNode?.GetSemantic<Person>();
             if (person == null) return;
 
             var group = groupsTreeView.SelectedNode?.Parent?.GetSemantic<Group>();
@@ -137,7 +139,8 @@ namespace MembersApp
             CommandManager.Execute(
                 new MacroCommand(
                     new LeaveCommand(group, person),
-                    new RemoveTreeNodeCommand( groupsTreeView.SelectedNode )));
+                    new SelectTreeNode(groupsTreeView.SelectedNode.Parent),
+                    new RemoveTreeNodeCommand(groupsTreeView.SelectedNode)));
 
             //group.Members.Remove(person);
 
