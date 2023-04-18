@@ -1,11 +1,17 @@
+using Members.Core.Commands;
 using Members.Core.Patterns;
+using Members.Models.Commands;
 using Members.Models.Domain;
+using MembersApp.Commands;
 using MembersApp.Extensions;
+using System.Xml.Linq;
 
 namespace MembersApp
 {
     public partial class MainForm : Form
     {
+        private ICommandManager CommandManager { get; } = new CommandManager();
+
         public MainForm()
         {
             InitializeComponent();
@@ -15,19 +21,23 @@ namespace MembersApp
                                      groupsTreeView.SelectedNode?.GetSemantic<Group>() != null;
 
             groupsTreeView.AfterSelect += (s, a) =>
-                joinButton.Enabled = peopleTreeView.SelectedNode != null &&
-                                     groupsTreeView.SelectedNode?.GetSemantic<Group>() != null;
+                joinButton.Enabled = peopleTreeView.HasNodeSelected() &&
+                                     groupsTreeView.IsNodeSelected<Group>();
 
             groupsTreeView.AfterSelect += (s, a) =>
                 leaveButton.Enabled = groupsTreeView.SelectedNode?.GetSemantic<Person>() != null;
-        }
-        private void AddMemberNode(TreeNodeCollection nodes, Member member)
-        {
-            var node = nodes.Add(member.Name);
-            node.ImageKey = node.SelectedImageKey = member.GetType().Name;
-            node.Tag = member.Subscribe((s, a) => node.Text = member.Name);
+
+            CommandManager.Notify += (s, a) => undoToolStripButton.Enabled = CommandManager.HasUndo;
+            CommandManager.Notify += (s, a) => redoToolStripButton.Enabled = CommandManager.HasRedo;
+
+            CommandManager.Notify += (s, a) => undoToolStripMenuItem.Enabled = CommandManager.HasUndo;
+            CommandManager.Notify += (s, a) => redoToolStripMenuItem.Enabled = CommandManager.HasRedo;
         }
 
+        private void Execute(ICommand command)
+        {
+            CommandManager.Execute(command);
+        }
 
         private void OnExit(object sender, EventArgs e)
         {
@@ -36,12 +46,12 @@ namespace MembersApp
 
         private void OnUndo(object sender, EventArgs e)
         {
-
+            CommandManager.Undo();
         }
 
         private void OnRedo(object sender, EventArgs e)
         {
-
+            CommandManager.Redo();
         }
 
         private void OnEdit(object sender, EventArgs e)
@@ -58,7 +68,8 @@ namespace MembersApp
 
             if (dialog.ShowDialog(this) == DialogResult.OK)
             {
-                person.Name = dialog.Value;
+                var command = new RenameMemberCommand(person, dialog.Value);
+                CommandManager.Execute(command);
             }
         }
 
@@ -72,7 +83,7 @@ namespace MembersApp
             if (dialog.ShowDialog(this) == DialogResult.OK)
             {
                 var person = new Person() { Name = dialog.Value };
-                AddMemberNode(peopleTreeView.Nodes, person);
+                Execute(new CreateTreeNodeCommand(peopleTreeView.Nodes, person));
             }
         }
 
@@ -86,7 +97,7 @@ namespace MembersApp
             if (dialog.ShowDialog(this) == DialogResult.OK)
             {
                 var group = new Group() { Name = dialog.Value };
-                AddMemberNode(groupsTreeView.Nodes, group);
+                Execute(new CreateTreeNodeCommand(groupsTreeView.Nodes, group));
             }
         }
 
@@ -100,7 +111,7 @@ namespace MembersApp
 
             group.Members.Add(person);
 
-            AddMemberNode(groupsTreeView.SelectedNode.Nodes, person);
+            Execute(new CreateTreeNodeCommand(groupsTreeView.SelectedNode.Nodes, person));
 
         }
 
@@ -112,12 +123,14 @@ namespace MembersApp
             var group = groupsTreeView.SelectedNode?.Parent?.GetSemantic<Group>();
             if (group == null) return;
 
+            var node = groupsTreeView.SelectedNode;
+
             group.Members.Remove(person);
 
             var observer = groupsTreeView.SelectedNode?.Tag as Observer;
             observer?.Unsubscribe();
 
-            groupsTreeView.SelectedNode?.Remove();
+            Execute(new RemoveTreeNodeCommand(node.Parent.Nodes, node));
         }
     }
 }
