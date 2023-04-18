@@ -1,5 +1,4 @@
 using Members.Core.Commands;
-using Members.Core.Patterns;
 using Members.Models.Commands;
 using Members.Models.Domain;
 using MembersApp.Commands;

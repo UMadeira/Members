@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-namespace Members.Core.Patterns
+﻿namespace Members.Core.Patterns
 {
     public class Observer : IObserver
     {
