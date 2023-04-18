@@ -9,7 +9,7 @@ namespace MembersApp.Extensions
             return treeView.SelectedNode != null;
         }
 
-        public static bool HasSelectedNodeOfType<T>( this TreeView treeView ) where T : Observable
+        public static bool HasSelectedNodeOfType<T>( this TreeView treeView ) where T : class, IObservable
         {
             return treeView.SelectedNode?.GetSemantic<T>() != null;
         }

@@ -4,7 +4,7 @@ namespace MembersApp.Extensions
 {
     internal static class TreeNodeExtensions
     {
-        public static T? GetSemantic<T>( this TreeNode node ) where T : Observable
+        public static T? GetSemantic<T>( this TreeNode node ) where T : class, IObservable
         {
             var observer = node.Tag as IObserver;
             return observer?.Observable as T;
