@@ -2,6 +2,7 @@ using Members.Core.Commands;
 using Members.Core.Patterns;
 using Members.Models.Commands;
 using Members.Models.Domain;
+using MembersApp.Commands;
 using MembersApp.Extensions;
 
 namespace MembersApp
@@ -15,15 +16,15 @@ namespace MembersApp
             InitializeComponent();
 
             peopleTreeView.AfterSelect += (s, a) =>
-                joinButton.Enabled = peopleTreeView.SelectedNode != null &&
-                                     groupsTreeView.SelectedNode?.GetSemantic<Group>() != null;
+                joinButton.Enabled = peopleTreeView.HasSelectedNode() &&
+                                     groupsTreeView.HasSelectedNodeOfType<Group>();
 
             groupsTreeView.AfterSelect += (s, a) =>
-                joinButton.Enabled = peopleTreeView.SelectedNode != null &&
-                                     groupsTreeView.SelectedNode?.GetSemantic<Group>() != null;
+                joinButton.Enabled = peopleTreeView.HasSelectedNode() &&
+                                     groupsTreeView.HasSelectedNodeOfType<Group>();
 
             groupsTreeView.AfterSelect += (s, a) =>
-                leaveButton.Enabled = groupsTreeView.SelectedNode?.GetSemantic<Person>() != null;
+                leaveButton.Enabled = groupsTreeView.HasSelectedNodeOfType<Person>();
 
             CommandManager.Notify += (s, a) => 
                 undoToolStripButton.Enabled = CommandManager.HasUndo;
@@ -115,9 +116,14 @@ namespace MembersApp
             var person = peopleTreeView.SelectedNode?.GetSemantic<Person>();
             if (person == null) return;
 
-            group.Members.Add(person);
+            CommandManager.Execute(
+                new MacroCommand(
+                    new JoinCommand(group, person),
+                    new AddTreeNodeCommand(
+                        groupsTreeView.SelectedNode.Nodes, person ) ) );
 
-            AddMemberNode(groupsTreeView.SelectedNode.Nodes, person);
+            //group.Members.Add(person);
+            //AddMemberNode(groupsTreeView.SelectedNode.Nodes, person);
         }
 
         private void OnLeaveGroup(object sender, EventArgs e)
@@ -128,10 +134,15 @@ namespace MembersApp
             var group = groupsTreeView.SelectedNode?.Parent?.GetSemantic<Group>();
             if (group == null) return;
 
-            group.Members.Remove(person);
+            CommandManager.Execute(
+                new MacroCommand(
+                    new LeaveCommand(group, person),
+                    new RemoveTreeNodeCommand( groupsTreeView.SelectedNode )));
 
-            groupsTreeView.SelectedNode?.Unsubscribe();
-            groupsTreeView.SelectedNode?.Remove();
+            //group.Members.Remove(person);
+
+            //groupsTreeView.SelectedNode?.Unsubscribe();
+            //groupsTreeView.SelectedNode?.Remove();
         }
     }
 }
