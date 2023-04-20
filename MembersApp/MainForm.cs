@@ -137,14 +137,39 @@ namespace MembersApp
 
             CommandManager.Execute(
                 new MacroCommand(
-                    new LeaveCommand(group, person),
-                    new SelectTreeNode(groupsTreeView.SelectedNode.Parent),
-                    new RemoveTreeNodeCommand(groupsTreeView.SelectedNode)));
+                    new LeaveCommand( group, person ),
+                    new SelectTreeNode( groupsTreeView.SelectedNode.Parent ),
+                    new RemoveTreeNodeCommand( groupsTreeView.SelectedNode ) ) );
+        }
 
-            //group.Members.Remove(person);
+        private void OnDelete(object sender, EventArgs e)
+        {
+            if (peopleTreeView.Focused)
+            {
+                var node = peopleTreeView.SelectedNode;
+                if (node == null) return;
 
-            //groupsTreeView.SelectedNode?.Unsubscribe();
-            //groupsTreeView.SelectedNode?.Remove();
+                var people = node.GetSemantic<Person>();
+                if (people == null) return;
+
+                CommandManager.Execute(
+                    new MacroCommand(
+                        new DeleteCommand(people),
+                        new RemoveTreeNodeCommand(node)));
+            }
+            else if (groupsTreeView.Focused)
+            {
+                var node = groupsTreeView.SelectedNode;
+                if (node == null) return;
+
+                var group = node.GetSemantic<Group>();
+                if (group == null) return;
+
+                CommandManager.Execute(
+                    new MacroCommand(
+                        new DeleteCommand(group),
+                        new RemoveTreeNodeCommand(node)));
+            }
         }
     }
 }
