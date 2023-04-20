@@ -1,4 +1,4 @@
-﻿namespace Members.Core.Patterns
+﻿namespace Members.Core.Observers
 {
     public interface IObserver
     {

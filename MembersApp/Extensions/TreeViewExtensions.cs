@@ -1,4 +1,4 @@
-﻿using Members.Core.Patterns;
+﻿using Members.Core.Observers;
 
 namespace MembersApp.Extensions
 {
