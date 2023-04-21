@@ -1,12 +1,7 @@
-﻿using Auth.Data.Classes;
-using Auth.Data.EntityFramework;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
+using Members.Core.Repositories;
 
 namespace Members.Data
 {
@@ -16,7 +11,7 @@ namespace Members.Data
 
         public DbContext Context { get; } = new MembersContext();
 
-        private IDbContextTransaction Transaction { get; set; }
+        private IDbContextTransaction? Transaction { get; set; }
 
         public void Begin()
         {

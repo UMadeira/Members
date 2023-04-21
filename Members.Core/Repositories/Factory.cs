@@ -1,27 +1,27 @@
-﻿using Auth.Data.Classes;
-
+﻿
 namespace Members.Core.Repositories
 {
-    public class Factory
+    public class Factory : IFactory
     {
-        public Factory()
-            : this(typeof(User), typeof(Group), typeof(Permission))
-        {
-        }
+        private IList<Type> Constructs { get; set; } = new List<Type>();
 
-        public Factory(params Type[] types)
+        public Factory( params Type[] types )
         {
             Constructs = new List<Type>(types);
         }
 
-        private static IList<Type> Constructs { get; set; } = new List<Type>();
+        public void Regist( Type type ) 
+        {
+            if (Constructs.Contains(type)) return;
+            Constructs.Add(type);
+        }
 
         public T? Create<T>(params object?[]? args)
         {
             var type = typeof(T);
 
-            if (!Constructs.Contains(type)) return Cast<T>(null);
-            return Cast<T>(Activator.CreateInstance(type, args));
+            if ( ! Constructs.Contains( type ) ) return Cast<T>(null);
+            return Cast<T>( Activator.CreateInstance( type, args ) );
         }
 
         public static T? Cast<T>(object? obj)

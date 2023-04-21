@@ -1,6 +1,4 @@
-﻿using Auth.Data.Classes;
-
-namespace Members.Core.Repositories
+﻿namespace Members.Core.Repositories
 {
     public interface IUnitOfWork : IDisposable
     {

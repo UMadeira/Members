@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Members.Data.Configurations;
 
 namespace Members.Data
 {
     public class MembersContext : DbContext
     {
-        protected override void OnConfiguring(DbContextOptionsBuilder builder)
+        protected override void OnConfiguring( DbContextOptionsBuilder builder )
         {
             base.OnConfiguring(builder);
 
