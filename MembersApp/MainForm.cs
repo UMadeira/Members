@@ -4,6 +4,7 @@ using Members.Models.Commands;
 using Members.Models.Domain;
 using MembersApp.Commands;
 using MembersApp.Extensions;
+using System;
 
 namespace MembersApp
 {
@@ -68,6 +69,13 @@ namespace MembersApp
 
         private void OnSave(object sender, EventArgs e)
         {
+            var repository = UnitOfWork.GetRepository<Person>();
+            foreach ( var member in repository.GetAll() )
+            {
+                if ( ! member.Zombie ) continue;
+                repository.Delete( member );
+            }
+
             UnitOfWork?.SaveChanges();
         }
 
@@ -100,7 +108,6 @@ namespace MembersApp
 
             if (dialog.ShowDialog(this) == DialogResult.OK)
             {
-                //person.Name = dialog.Value;
                 CommandManager.Execute(new RenameCommand(person, dialog.Value));
             }
         }
@@ -120,7 +127,10 @@ namespace MembersApp
                 person.Name = dialog.Value;
                 UnitOfWork.GetRepository<Person>().Insert(person);
 
-                AddMemberNode(peopleTreeView.Nodes, person);
+                CommandManager.Execute(
+                    new MacroCommand( 
+                        new CreateCommand(person), 
+                        new AddTreeNodeCommand( peopleTreeView.Nodes, person ) ) );
             }
         }
 
@@ -139,7 +149,12 @@ namespace MembersApp
                 group.Name = dialog.Value;
                 UnitOfWork.GetRepository<Group>().Insert(group);
 
-                AddMemberNode(groupsTreeView.Nodes, group);
+                CommandManager.Execute(
+                    new MacroCommand(
+                        new CreateCommand(group),
+                        new AddTreeNodeCommand(peopleTreeView.Nodes, group )));
+
+                //AddMemberNode(groupsTreeView.Nodes, group);
             }
         }
 
