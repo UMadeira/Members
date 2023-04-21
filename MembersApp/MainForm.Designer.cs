@@ -36,10 +36,6 @@
             openToolStripMenuItem = new ToolStripMenuItem();
             toolStripSeparator = new ToolStripSeparator();
             saveToolStripMenuItem = new ToolStripMenuItem();
-            saveAsToolStripMenuItem = new ToolStripMenuItem();
-            toolStripSeparator1 = new ToolStripSeparator();
-            printToolStripMenuItem = new ToolStripMenuItem();
-            printPreviewToolStripMenuItem = new ToolStripMenuItem();
             toolStripSeparator2 = new ToolStripSeparator();
             exitToolStripMenuItem = new ToolStripMenuItem();
             editToolStripMenuItem = new ToolStripMenuItem();
@@ -68,6 +64,7 @@
             redoToolStripButton = new ToolStripButton();
             toolStripSeparator7 = new ToolStripSeparator();
             editToolStripButton = new ToolStripButton();
+            deleteToolStripButton = new ToolStripButton();
             mainStatusStrip = new StatusStrip();
             mainStatusLabel = new ToolStripStatusLabel();
             tableLayoutPanel1 = new TableLayoutPanel();
@@ -76,7 +73,6 @@
             groupsTreeView = new TreeView();
             joinButton = new Button();
             leaveButton = new Button();
-            deleteToolStripButton = new ToolStripButton();
             menuStrip1.SuspendLayout();
             mainToolStrip.SuspendLayout();
             mainStatusStrip.SuspendLayout();
@@ -95,7 +91,7 @@
             // 
             // fileToolStripMenuItem
             // 
-            fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { newToolStripMenuItem, openToolStripMenuItem, toolStripSeparator, saveToolStripMenuItem, saveAsToolStripMenuItem, toolStripSeparator1, printToolStripMenuItem, printPreviewToolStripMenuItem, toolStripSeparator2, exitToolStripMenuItem });
+            fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { newToolStripMenuItem, openToolStripMenuItem, toolStripSeparator, saveToolStripMenuItem, toolStripSeparator2, exitToolStripMenuItem });
             fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             fileToolStripMenuItem.Size = new Size(54, 29);
             fileToolStripMenuItem.Text = "&File";
@@ -131,34 +127,7 @@
             saveToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.S;
             saveToolStripMenuItem.Size = new Size(223, 34);
             saveToolStripMenuItem.Text = "&Save";
-            // 
-            // saveAsToolStripMenuItem
-            // 
-            saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-            saveAsToolStripMenuItem.Size = new Size(223, 34);
-            saveAsToolStripMenuItem.Text = "Save &As";
-            // 
-            // toolStripSeparator1
-            // 
-            toolStripSeparator1.Name = "toolStripSeparator1";
-            toolStripSeparator1.Size = new Size(220, 6);
-            // 
-            // printToolStripMenuItem
-            // 
-            printToolStripMenuItem.Image = (Image)resources.GetObject("printToolStripMenuItem.Image");
-            printToolStripMenuItem.ImageTransparentColor = Color.Magenta;
-            printToolStripMenuItem.Name = "printToolStripMenuItem";
-            printToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.P;
-            printToolStripMenuItem.Size = new Size(223, 34);
-            printToolStripMenuItem.Text = "&Print";
-            // 
-            // printPreviewToolStripMenuItem
-            // 
-            printPreviewToolStripMenuItem.Image = (Image)resources.GetObject("printPreviewToolStripMenuItem.Image");
-            printPreviewToolStripMenuItem.ImageTransparentColor = Color.Magenta;
-            printPreviewToolStripMenuItem.Name = "printPreviewToolStripMenuItem";
-            printPreviewToolStripMenuItem.Size = new Size(223, 34);
-            printPreviewToolStripMenuItem.Text = "Print Pre&view";
+            saveToolStripMenuItem.Click += OnSave;
             // 
             // toolStripSeparator2
             // 
@@ -368,6 +337,16 @@
             editToolStripButton.Text = "Edit";
             editToolStripButton.Click += OnEdit;
             // 
+            // deleteToolStripButton
+            // 
+            deleteToolStripButton.DisplayStyle = ToolStripItemDisplayStyle.Image;
+            deleteToolStripButton.Image = (Image)resources.GetObject("deleteToolStripButton.Image");
+            deleteToolStripButton.ImageTransparentColor = Color.Magenta;
+            deleteToolStripButton.Name = "deleteToolStripButton";
+            deleteToolStripButton.Size = new Size(34, 28);
+            deleteToolStripButton.Text = "Delete";
+            deleteToolStripButton.Click += OnDelete;
+            // 
             // mainStatusStrip
             // 
             mainStatusStrip.ImageScalingSize = new Size(24, 24);
@@ -467,16 +446,6 @@
             leaveButton.UseVisualStyleBackColor = true;
             leaveButton.Click += OnLeaveGroup;
             // 
-            // deleteToolStripButton
-            // 
-            deleteToolStripButton.DisplayStyle = ToolStripItemDisplayStyle.Image;
-            deleteToolStripButton.Image = (Image)resources.GetObject("deleteToolStripButton.Image");
-            deleteToolStripButton.ImageTransparentColor = Color.Magenta;
-            deleteToolStripButton.Name = "deleteToolStripButton";
-            deleteToolStripButton.Size = new Size(34, 28);
-            deleteToolStripButton.Text = "Delete";
-            deleteToolStripButton.Click += OnDelete;
-            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
@@ -509,10 +478,6 @@
         private ToolStripMenuItem openToolStripMenuItem;
         private ToolStripSeparator toolStripSeparator;
         private ToolStripMenuItem saveToolStripMenuItem;
-        private ToolStripMenuItem saveAsToolStripMenuItem;
-        private ToolStripSeparator toolStripSeparator1;
-        private ToolStripMenuItem printToolStripMenuItem;
-        private ToolStripMenuItem printPreviewToolStripMenuItem;
         private ToolStripSeparator toolStripSeparator2;
         private ToolStripMenuItem exitToolStripMenuItem;
         private ToolStripMenuItem editToolStripMenuItem;

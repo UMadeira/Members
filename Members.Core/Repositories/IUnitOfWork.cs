@@ -2,7 +2,7 @@
 {
     public interface IUnitOfWork : IDisposable
     {
-        Factory Factory { get; }
+        IFactory Factory { get; }
 
         IRepository<TEntity> GetRepository<TEntity>() where TEntity : Item;
 

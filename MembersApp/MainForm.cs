@@ -1,4 +1,5 @@
 using Members.Core.Commands;
+using Members.Core.Repositories;
 using Members.Models.Commands;
 using Members.Models.Domain;
 using MembersApp.Commands;
@@ -8,11 +9,15 @@ namespace MembersApp
 {
     public partial class MainForm : Form
     {
+        private IUnitOfWork UnitOfWork { get; set; }
+
         private ICommandManager CommandManager { get; } = new CommandManager();
 
-        public MainForm()
+        public MainForm(IUnitOfWork unitOfWork)
         {
             InitializeComponent();
+
+            UnitOfWork = unitOfWork;
 
             peopleTreeView.AfterSelect += (s, a) =>
                 joinButton.Enabled = peopleTreeView.HasSelectedNode() &&
@@ -31,14 +36,39 @@ namespace MembersApp
             CommandManager.Notify += (s, a) =>
                 redoToolStripButton.Enabled = CommandManager.HasRedo;
 
+            LoadModel();
         }
 
-        private void AddMemberNode(TreeNodeCollection nodes, Member member)
+        private void LoadModel()
+        {
+            foreach (var person in UnitOfWork.GetRepository<Person>().GetAll() )
+            { 
+                AddMemberNode( peopleTreeView.Nodes, person );
+            }
+
+            foreach (var group in UnitOfWork.GetRepository<Group>().GetAll())
+            {
+                var  node = AddMemberNode( groupsTreeView.Nodes, group );
+                foreach ( var person in group.Members )
+                {
+                    AddMemberNode( node.Nodes, person );
+                }
+            }
+        }
+
+        private TreeNode AddMemberNode(TreeNodeCollection nodes, Member member)
         {
             var node = nodes.Add(member.Name);
             node.ImageKey = node.SelectedImageKey = member.GetType().Name;
 
             node.Subscribe(member, (s, a) => node.Text = member.Name);
+
+            return node;
+        }
+
+        private void OnSave(object sender, EventArgs e)
+        {
+            UnitOfWork?.SaveChanges();
         }
 
         private void OnExit(object sender, EventArgs e)
@@ -86,7 +116,10 @@ namespace MembersApp
 
             if (dialog.ShowDialog(this) == DialogResult.OK)
             {
-                var person = new Person() { Name = dialog.Value };
+                var person = UnitOfWork.GetRepository<Person>().Create();
+                person.Name = dialog.Value;
+                UnitOfWork.GetRepository<Person>().Insert(person);
+
                 AddMemberNode(peopleTreeView.Nodes, person);
             }
         }
@@ -102,7 +135,10 @@ namespace MembersApp
 
             if (dialog.ShowDialog(this) == DialogResult.OK)
             {
-                var group = new Group() { Name = dialog.Value };
+                var group = UnitOfWork.GetRepository<Group>().Create();
+                group.Name = dialog.Value;
+                UnitOfWork.GetRepository<Group>().Insert(group);
+
                 AddMemberNode(groupsTreeView.Nodes, group);
             }
         }
@@ -122,9 +158,6 @@ namespace MembersApp
                     new JoinCommand(group, person),
                     new AddTreeNodeCommand(
                         groupsTreeView.SelectedNode.Nodes, person)));
-
-            //group.Members.Add(person);
-            //AddMemberNode(groupsTreeView.SelectedNode.Nodes, person);
         }
 
         private void OnLeaveGroup(object sender, EventArgs e)
@@ -137,9 +170,9 @@ namespace MembersApp
 
             CommandManager.Execute(
                 new MacroCommand(
-                    new LeaveCommand( group, person ),
-                    new SelectTreeNode( groupsTreeView.SelectedNode.Parent ),
-                    new RemoveTreeNodeCommand( groupsTreeView.SelectedNode ) ) );
+                    new LeaveCommand(group, person),
+                    new SelectTreeNode(groupsTreeView.SelectedNode.Parent),
+                    new RemoveTreeNodeCommand(groupsTreeView.SelectedNode)));
         }
 
         private void OnDelete(object sender, EventArgs e)

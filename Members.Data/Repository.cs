@@ -5,10 +5,10 @@ namespace Members.Data
 {
     public class Repository<TEntity> : IRepository<TEntity> where TEntity : Item
     {
-        public Repository(IUnitOfWork unitOfWork, DbContext context)
+        public Repository( IUnitOfWork unitOfWork, DbContext context )
         {
             UnitOfWork = unitOfWork;
-            Context = context;
+            Context    = context;
         }
 
         private IUnitOfWork UnitOfWork { get; set; }
@@ -20,7 +20,7 @@ namespace Members.Data
             return Context.Set<TEntity>();
         }
 
-        public TEntity Create(params object?[]? args)
+        public TEntity Create( params object?[]? args )
         {
             return UnitOfWork.Factory.Create<TEntity>(args);
         }

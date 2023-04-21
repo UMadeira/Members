@@ -7,16 +7,21 @@ namespace Members.Data
 {
     public class UnitOfWork : IUnitOfWork
     {
-        public Factory Factory { get; } = new Factory();
+        public UnitOfWork( MembersContext context, IFactory factory ) 
+        { 
+            Context = context;
+            Factory = factory;
+        }
 
-        public DbContext Context { get; } = new MembersContext();
+        public IFactory Factory { get; }
+
+        private DbContext Context { get; }
 
         private IDbContextTransaction? Transaction { get; set; }
 
         public void Begin()
         {
             Transaction = Context.Database.BeginTransaction();
-
         }
 
         public void Commit()
