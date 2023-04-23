@@ -1,6 +1,10 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-//using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
+
+using Members.Core.Repositories;
+using Members.Models.Domain;
+using Members.Data;
 
 namespace MembersApp
 {
@@ -22,7 +26,12 @@ namespace MembersApp
                 //.AddUserSecrets<Program>()
                 .Build();
 
+            var connectionString = config.GetConnectionString("Members");
+
             var services = new ServiceCollection();
+            services.AddDbContext<MembersContext>(options => options.UseSqlServer(connectionString));
+            services.AddSingleton<IFactory>( sp => new Factory(typeof(Person), typeof(Group)) );
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddTransient<MainForm>();
             var serviceProvider = services.BuildServiceProvider();
 

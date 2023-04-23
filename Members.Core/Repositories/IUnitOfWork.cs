@@ -1,10 +1,8 @@
-﻿using Auth.Data.Classes;
-
-namespace Members.Core.Repositories
+﻿namespace Members.Core.Repositories
 {
     public interface IUnitOfWork : IDisposable
     {
-        Factory Factory { get; }
+        IFactory Factory { get; }
 
         IRepository<TEntity> GetRepository<TEntity>() where TEntity : Item;
 

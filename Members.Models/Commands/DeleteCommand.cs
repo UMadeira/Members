@@ -12,17 +12,11 @@ namespace Members.Models.Commands
 
         private Member Member { get; }
 
-        public void Do()
-        {
-        }
+        public void Do() => Member.Zombie = true;
 
-        public void Undo()
-        {
-        }
+        public void Undo() => Member.Zombie = false;
 
-        public void Redo()
-        {
-        }
+        public void Redo() => Do();
 
         public void Cancel()
         {

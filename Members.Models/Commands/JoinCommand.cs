@@ -5,14 +5,14 @@ namespace Members.Models.Commands
 {
     public class JoinCommand : ICommand
     {
-        public JoinCommand( Group group, Member member ) 
+        public JoinCommand( Group group, Person member ) 
         { 
             Group  = group;
             Member = member;
         }
 
         private Group Group { get; }
-        private Member Member { get; }
+        private Person Member { get; }
 
         public void Do()
         {

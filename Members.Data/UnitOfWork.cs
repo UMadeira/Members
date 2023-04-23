@@ -1,38 +1,38 @@
-﻿using Auth.Data.Classes;
-using Auth.Data.EntityFramework;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
+using Members.Core.Repositories;
 
 namespace Members.Data
 {
     public class UnitOfWork : IUnitOfWork
     {
-        public Factory Factory { get; } = new Factory();
+        public UnitOfWork( MembersContext context, IFactory factory ) 
+        { 
+            Context = context;
+            Factory = factory;
+        }
 
-        public DbContext Context { get; } = new MembersContext();
+        public IFactory Factory { get; }
 
-        private IDbContextTransaction Transaction { get; set; }
+        private DbContext Context { get; }
+
+        private IDbContextTransaction? Transaction { get; set; }
 
         public void Begin()
         {
             Transaction = Context.Database.BeginTransaction();
-
         }
 
         public void Commit()
         {
-            Transaction.Commit();
+            Transaction?.Commit();
             Transaction = null;
         }
 
         public void Rollback()
         {
-            Transaction.Rollback();
+            Transaction?.Rollback();
             Transaction = null;
         }
 
