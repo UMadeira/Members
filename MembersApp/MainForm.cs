@@ -42,17 +42,17 @@ namespace MembersApp
 
         private void LoadModel()
         {
-            foreach (var person in UnitOfWork.GetRepository<Person>().GetAll() )
-            { 
-                AddMemberNode( peopleTreeView.Nodes, person );
+            foreach (var person in UnitOfWork.GetRepository<Person>().GetAll())
+            {
+                AddMemberNode(peopleTreeView.Nodes, person);
             }
 
             foreach (var group in UnitOfWork.GetRepository<Group>().GetAll())
             {
-                var  node = AddMemberNode( groupsTreeView.Nodes, group );
-                foreach ( var person in group.Members )
+                var node = AddMemberNode(groupsTreeView.Nodes, group);
+                foreach (var person in group.Members)
                 {
-                    AddMemberNode( node.Nodes, person );
+                    AddMemberNode(node.Nodes, person);
                 }
             }
         }
@@ -70,10 +70,10 @@ namespace MembersApp
         private void OnSave(object sender, EventArgs e)
         {
             var repository = UnitOfWork.GetRepository<Person>();
-            foreach ( var member in repository.GetAll() )
+            foreach (var member in repository.GetAll())
             {
-                if ( ! member.Zombie ) continue;
-                repository.Delete( member );
+                if (!member.Zombie) continue;
+                repository.Delete(member);
             }
 
             UnitOfWork?.SaveChanges();
@@ -128,9 +128,9 @@ namespace MembersApp
                 UnitOfWork.GetRepository<Person>().Insert(person);
 
                 CommandManager.Execute(
-                    new MacroCommand( 
-                        new CreateCommand(person), 
-                        new AddTreeNodeCommand( peopleTreeView.Nodes, person ) ) );
+                    new MacroCommand(
+                        new CreateCommand(person),
+                        new AddTreeNodeCommand(peopleTreeView.Nodes, person)));
             }
         }
 
@@ -152,7 +152,7 @@ namespace MembersApp
                 CommandManager.Execute(
                     new MacroCommand(
                         new CreateCommand(group),
-                        new AddTreeNodeCommand(peopleTreeView.Nodes, group )));
+                        new AddTreeNodeCommand(groupsTreeView.Nodes, group)));
 
                 //AddMemberNode(groupsTreeView.Nodes, group);
             }

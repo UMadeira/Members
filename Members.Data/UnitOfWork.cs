@@ -26,13 +26,13 @@ namespace Members.Data
 
         public void Commit()
         {
-            Transaction.Commit();
+            Transaction?.Commit();
             Transaction = null;
         }
 
         public void Rollback()
         {
-            Transaction.Rollback();
+            Transaction?.Rollback();
             Transaction = null;
         }
 
