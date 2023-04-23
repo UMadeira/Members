@@ -20,6 +20,11 @@ namespace Members.Data
             return Context.Set<TEntity>();
         }
 
+        public TEntity? Get( int id ) 
+        {
+            return Context.Set<TEntity>()?.FirstOrDefault( x => x.Id == id );
+        }
+
         public TEntity Create( params object?[]? args )
         {
             return UnitOfWork.Factory.Create<TEntity>(args);
