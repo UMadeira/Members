@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.Storage;
 
 using Members.Core.Repositories;
+using System.Formats.Tar;
 
 namespace Members.Data
 {
@@ -15,7 +16,7 @@ namespace Members.Data
 
         public IFactory Factory { get; }
 
-        private DbContext Context { get; }
+        protected DbContext Context { get; }
 
         private IDbContextTransaction? Transaction { get; set; }
 
@@ -43,15 +44,20 @@ namespace Members.Data
 
         private IDictionary<Type, dynamic> Repositories { get; } = new Dictionary<Type, dynamic>();
 
-        public IRepository<TEntity> GetRepository<TEntity>() where TEntity : Item
+        public IRepository<TEntity>? GetRepository<TEntity>() where TEntity : Item
         {
             if (Repositories.ContainsKey(typeof(TEntity)))
                 return Repositories[typeof(TEntity)] as IRepository<TEntity>;
 
-            var repository = new Repository<TEntity>(this, Context);
-            Repositories.Add(typeof(TEntity), repository);
+            var repository = CreateRepository<TEntity>(this, Context);
+            if ( repository != null ) Repositories.Add( typeof(TEntity), repository );
 
             return repository;
+        }
+
+        protected virtual IRepository<TEntity>? CreateRepository<TEntity>( IUnitOfWork unitOfWork, DbContext context ) where TEntity : Item
+        { 
+            return new Repository<TEntity>(this, Context);
         }
 
         public void Dispose()

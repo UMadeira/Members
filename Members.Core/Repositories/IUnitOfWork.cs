@@ -4,7 +4,7 @@
     {
         IFactory Factory { get; }
 
-        IRepository<TEntity> GetRepository<TEntity>() where TEntity : Item;
+        IRepository<TEntity>? GetRepository<TEntity>() where TEntity : Item;
 
         void Begin();
         void Commit();
