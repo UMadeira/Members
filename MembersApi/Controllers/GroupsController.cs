@@ -1,5 +1,5 @@
-﻿using Members.Core.Repositories;
-using Members.Models.Domain;
+﻿using Members.Models.Domain;
+using Members.Data;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,10 +12,10 @@ namespace MembersApi.Controllers
     public class GroupsController : ControllerBase
     {
         private ILogger<PeopleController> Logger { get; }
-        private IUnitOfWork UnitOfWork { get; }
+        private IUnitOfWorkAsync UnitOfWork { get; }
 
 
-        public GroupsController(ILogger<PeopleController> logger, IUnitOfWork unitOfWork)
+        public GroupsController(ILogger<PeopleController> logger, IUnitOfWorkAsync unitOfWork)
         {
             Logger = logger;
             UnitOfWork = unitOfWork;
@@ -23,46 +23,31 @@ namespace MembersApi.Controllers
 
         // GET: api/<GroupsController>
         [HttpGet]
-        public IEnumerable<DTOs.Group> Get()
+        public async Task<IEnumerable<DTOs.Group>> GetAsync()
         {
-            return UnitOfWork.GetRepository<Group>().GetAll()
-                .Select(x => new DTOs.Group {
+            var groups = await UnitOfWork.GetRepositoryAsync<Group>()?.GetAllAsync();
+
+            return groups.Select(x => new DTOs.Group {
                     Id = x.Id, 
                     Name = x.Name,
                     Members = x.Members?.Select( y => new DTOs.Person { Id = y.Id, Name = y.Name } )
                 });
         }
 
-        // GET api/<GroupsController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<DTOs.Group?> GetAsync(int id)
         {
-            return "value";
-        }
+            var group = await UnitOfWork.GetRepositoryAsync<Group>().GetAsync( id );
+            if (group == null) return null;
 
-        // POST api/<GroupsController>
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-        }
-
-        // PUT api/<GroupsController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<GroupsController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            return new DTOs.Group { Id = group.Id, Name = group.Name };
         }
 
         [HttpGet("{id}/Members")]
-        public IEnumerable<DTOs.Person> GetMembers(int id)
+        public async Task<IEnumerable<DTOs.Person>> GetMembersAsync(int id)
         {
-            return UnitOfWork.GetRepository<Group>().Get(id)?.Members
-                .Select(y => new DTOs.Person { Id = y.Id, Name = y.Name }) ?? Enumerable.Empty<DTOs.Person>();
+            var group = await UnitOfWork?.GetRepositoryAsync<Group>()?.GetAsync(id);
+            return group?.Members?.Select( y => new DTOs.Person { Id = y.Id, Name = y.Name }) ?? Enumerable.Empty<DTOs.Person>();
         }
     }
 }

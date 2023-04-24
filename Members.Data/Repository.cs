@@ -11,9 +11,9 @@ namespace Members.Data
             Context    = context;
         }
 
-        private IUnitOfWork UnitOfWork { get; set; }
+        protected IUnitOfWork UnitOfWork { get; set; }
 
-        private DbContext Context { get; set; }
+        protected DbContext Context { get; set; }
 
         public IEnumerable<TEntity> GetAll()
         {
@@ -25,7 +25,7 @@ namespace Members.Data
             return Context.Set<TEntity>()?.FirstOrDefault( x => x.Id == id );
         }
 
-        public TEntity Create( params object?[]? args )
+        public TEntity? Create( params object?[]? args )
         {
             return UnitOfWork.Factory.Create<TEntity>(args);
         }

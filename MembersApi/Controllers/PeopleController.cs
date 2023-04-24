@@ -1,7 +1,6 @@
 using Members.Core.Repositories;
 using Members.Models.Domain;
 using Microsoft.AspNetCore.Mvc;
-using System.Runtime.CompilerServices;
 
 namespace MembersApi.Controllers
 {
@@ -20,16 +19,16 @@ namespace MembersApi.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<DTOs.Person> Get()
+        public IEnumerable<DTOs.Person>? Get()
         {
-            return UnitOfWork.GetRepository<Person>().GetAll()
+            return UnitOfWork.GetRepository<Person>()?.GetAll()
                 .Select( x => new DTOs.Person { Id = x.Id, Name = x.Name } );
         }
 
         [HttpGet("{id}")]
         public DTOs.Person? Get( int id )
         {
-            var person = UnitOfWork.GetRepository<Person>().Get(id);
+            var person = UnitOfWork.GetRepository<Person>()?.Get(id);
             if (person == null) return null;
 
             return new DTOs.Person { Id = person.Id, Name = person.Name };

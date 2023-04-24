@@ -2,7 +2,7 @@
 {
     public interface IRepository<TEntity> where TEntity : Item
     {
-        TEntity Create( params object?[]? args );
+        TEntity? Create( params object?[]? args );
 
         IEnumerable<TEntity> GetAll();
         TEntity?             Get(int id);

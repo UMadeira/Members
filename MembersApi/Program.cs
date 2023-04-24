@@ -28,6 +28,7 @@ namespace MembersApi
             builder.Services.AddDbContext<MembersContext>(options => options.UseSqlServer( connectionString ) );
             builder.Services.AddSingleton<IFactory>(sp => new Factory(typeof(Person), typeof(Group)));
             builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddTransient<IUnitOfWorkAsync, UnitOfWorkAsync>();
 
             var app = builder.Build();
 
