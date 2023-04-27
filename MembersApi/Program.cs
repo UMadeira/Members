@@ -21,6 +21,20 @@ namespace MembersApi
 
             // Add services to the container.
 
+            builder.Services.AddCors( options => {
+                options.AddPolicy(name: "MembersCorsPolicy",
+                    policy => {
+                        policy.WithOrigins(
+                            "https://localhost:7102",
+                            "http://localhost:5182");
+                    });
+                options.AddPolicy(name: "AllowEveryonePolicy",
+                    policy => {
+                        policy.AllowAnyOrigin()
+                              .AllowAnyHeader()
+                              .AllowAnyMethod(); } );
+            });
+
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -38,6 +52,8 @@ namespace MembersApi
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
+            app.UseCors("AllowEveryonePolicy");
 
             app.UseAuthorization();
             app.MapControllers();
