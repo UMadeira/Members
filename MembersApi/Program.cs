@@ -4,10 +4,13 @@
  */
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Identity.Web;
 
 using Members.Core.Repositories;
 using Members.Data;
 using Members.Models.Domain;
+using System.Configuration;
 
 namespace MembersApi
 {
@@ -20,6 +23,30 @@ namespace MembersApi
             var connectionString = builder.Configuration.GetConnectionString("Members");
 
             // Add services to the container.
+
+            builder.Services
+                .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddMicrosoftIdentityWebApi( builder.Configuration.GetSection("AzureAd") );
+
+            builder.Services.Configure<JwtBearerOptions>(
+                JwtBearerDefaults.AuthenticationScheme,
+                options => {
+                    options.Events.OnAuthenticationFailed = async failedContext => {
+                        if (failedContext.Exception.HResult == -2147024891)
+                        {
+                            failedContext.Response.StatusCode = 403;
+                            await failedContext.Response.CompleteAsync();
+                        }
+                    };
+                });
+
+
+            //.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            //.AddMicrosoftIdentityWebApi(
+            //     );
+
+            //.AddAuthentication( AzureADDefaults.BearerAuthenticationScheme )
+            //.AddAzureADBearer( options => Configuration.Bind( "AzureAd", options ) );
 
             builder.Services.AddCors( options => {
                 options.AddPolicy(name: "MembersCorsPolicy",

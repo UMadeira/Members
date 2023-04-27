@@ -2,6 +2,7 @@
 using Members.Data;
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -22,6 +23,7 @@ namespace MembersApi.Controllers
         }
 
         // GET: api/<GroupsController>
+        [Authorize]
         [HttpGet]
         public async Task<IEnumerable<DTOs.Group>> GetAsync()
         {

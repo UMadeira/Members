@@ -56,8 +56,8 @@ else
 
         if ( result.TryGetToken( out var token ) )
         {
-            //Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue(
-            //    "Bearer", token.Value );
+            Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue(
+                "Bearer", token.Value );
 
             groups = await Http.GetFromJsonAsync<Group[]>("http://localhost:5273/api/Groups");
         }
