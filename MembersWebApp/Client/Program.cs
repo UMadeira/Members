@@ -15,17 +15,11 @@ namespace MembersWebApp
             builder.Services.AddScoped(sp => new HttpClient { 
                 BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
-            //builder.Services.AddOidcAuthentication(options =>
-            //{
-            //    // Configure your authentication provider options here.
-            //    // For more information, see https://aka.ms/blazor-standalone-auth
-            //    builder.Configuration.Bind("Local", options.ProviderOptions);
-            //});
-
             builder.Services.AddMsalAuthentication( options => {
+                options.ProviderOptions.AdditionalScopesToConsent.Add("https://graph.microsoft.com/User.Read");
+                options.ProviderOptions.DefaultAccessTokenScopes.Add("api://members/groups.get");
                 builder.Configuration.Bind("AzureAd", options.ProviderOptions.Authentication);
             });
-
 
             await builder.Build().RunAsync();
         }

@@ -1,0 +1,81 @@
+﻿@page "/groups"
+
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
+
+@inject HttpClient Http
+@inject IAccessTokenProvider TokenProvider
+
+<PageTitle>Groups</PageTitle>
+
+<h3>Groups</h3>
+
+@if ( groups == null )
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="accordion" id="membersAccordionPanels">
+        @foreach ( var group in groups )
+        {
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#@group.Name-collapseOne" aria-expanded="true" 
+                            aria-controls="@group.Name-collapseOne">
+                        @group.Name
+                    </button>
+                </h2>
+                <div id="@group.Name-collapseOne" class="accordion-collapse collapse show">
+                    <div class="accordion-body">
+                        @if (group.Members == null)
+                        {
+                            <p>Empty group...</p>                            
+                        }
+                        else
+                        {
+                            @foreach (var member in group.Members)
+                            {
+                                <p>@member.Name</p>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+
+@code {
+    private Group[]? groups;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await TokenProvider.RequestAccessToken(
+            new AccessTokenRequestOptions { Scopes = new[] { "api://members/groups.get" } } );
+
+        if ( result.TryGetToken( out var token ) )
+        {
+            //Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue(
+            //    "Bearer", token.Value );
+
+            groups = await Http.GetFromJsonAsync<Group[]>("http://localhost:5273/api/Groups");
+        }
+    }
+
+    public class Member
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+    }
+
+    public class Person : Member
+    {
+    }
+
+    public class Group : Member
+    {
+        public IEnumerable<Person>? Members { get; set; }
+    }
+
+}
