@@ -28,6 +28,11 @@ namespace MembersApi
                             "https://localhost:7102",
                             "http://localhost:5182");
                     });
+                options.AddPolicy(name: "AllowEveryonePolicy",
+                    policy => {
+                        policy.AllowAnyOrigin()
+                              .AllowAnyHeader()
+                              .AllowAnyMethod(); } );
             });
 
             builder.Services.AddControllers();
@@ -48,7 +53,7 @@ namespace MembersApi
                 app.UseSwaggerUI();
             }
 
-            app.UseCors( "MembersCorsPolicy" );
+            app.UseCors("AllowEveryonePolicy");
 
             app.UseAuthorization();
             app.MapControllers();
