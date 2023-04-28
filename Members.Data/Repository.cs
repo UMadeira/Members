@@ -11,16 +11,21 @@ namespace Members.Data
             Context    = context;
         }
 
-        private IUnitOfWork UnitOfWork { get; set; }
+        protected IUnitOfWork UnitOfWork { get; set; }
 
-        private DbContext Context { get; set; }
+        protected DbContext Context { get; set; }
 
         public IEnumerable<TEntity> GetAll()
         {
             return Context.Set<TEntity>();
         }
 
-        public TEntity Create( params object?[]? args )
+        public TEntity? Get( int id ) 
+        {
+            return Context.Set<TEntity>()?.FirstOrDefault( x => x.Id == id );
+        }
+
+        public TEntity? Create( params object?[]? args )
         {
             return UnitOfWork.Factory.Create<TEntity>(args);
         }

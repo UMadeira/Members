@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Members.Data.Configurations;
-using Members.Models.Domain;
 
 namespace Members.Data
 {
@@ -33,16 +32,6 @@ namespace Members.Data
 
             modelBuilder.ApplyConfiguration(new PersonConfig());
             modelBuilder.ApplyConfiguration(new GroupConfig());
-
-            //modelBuilder.Entity<Group>().HasKey(e => e.Id);
-            //modelBuilder.Entity<Group>().Property(e => e.Id).UseIdentityColumn();
-            //modelBuilder.Entity<Group>().Property(e => e.TimeStamp).IsConcurrencyToken().ValueGeneratedOnAddOrUpdate();
-            //modelBuilder.Entity<Group>().HasMany(e => e.Members).WithMany();
-
-            //modelBuilder.Entity<Person>().HasKey(e => e.Id);
-            //modelBuilder.Entity<Person>().Property(e => e.Id).UseIdentityColumn();
-            //modelBuilder.Entity<Person>().Property(e => e.TimeStamp).IsConcurrencyToken().ValueGeneratedOnAddOrUpdate();
-
         }
     }
 }
