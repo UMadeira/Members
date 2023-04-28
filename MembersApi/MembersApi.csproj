@@ -22,6 +22,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Members.Core\Members.Core.csproj" />
     <ProjectReference Include="..\Members.Data\Members.Data.csproj" />
+    <ProjectReference Include="..\Members.DTOs\Members.DTOs.csproj" />
     <ProjectReference Include="..\Members.Models\Members.Models.csproj" />
   </ItemGroup>
 

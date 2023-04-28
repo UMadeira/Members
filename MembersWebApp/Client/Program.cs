@@ -17,7 +17,7 @@ namespace MembersWebApp
 
             builder.Services.AddMsalAuthentication( options => {
                 options.ProviderOptions.AdditionalScopesToConsent.Add("https://graph.microsoft.com/User.Read");
-                options.ProviderOptions.DefaultAccessTokenScopes.Add("api://members/groups.get");
+                options.ProviderOptions.DefaultAccessTokenScopes.Add("api://ffa91901-68f1-44b8-b1e1-5c4c65b22cb4/groups.get");
                 builder.Configuration.Bind("AzureAd", options.ProviderOptions.Authentication);
             });
 

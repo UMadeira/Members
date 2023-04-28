@@ -12,4 +12,8 @@
     <PackageReference Include="Microsoft.Authentication.WebAssembly.Msal" Version="7.0.5" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Members.DTOs\Members.DTOs.csproj" />
+  </ItemGroup>
+
 </Project>
