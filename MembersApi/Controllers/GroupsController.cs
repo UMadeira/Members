@@ -23,10 +23,17 @@ namespace MembersApi.Controllers
         }
 
         // GET: api/<GroupsController>
-        [Authorize]
+        //[Authorize]
         [HttpGet]
         public async Task<IEnumerable<DTOs.Group>> GetAsync()
         {
+            if (User.Claims.FirstOrDefault( c =>
+                (c.Type == "http://schemas.microsoft.com/identity/claims/scope") && 
+                (c.Value == "groups.get")) == null )
+            { 
+                throw new UnauthorizedAccessException();
+            }
+
             var groups = await UnitOfWork.GetRepositoryAsync<Group>()?.GetAllAsync();
 
             return groups.Select(x => new DTOs.Group {
