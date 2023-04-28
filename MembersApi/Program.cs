@@ -4,10 +4,13 @@
  */
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Identity.Web;
 
 using Members.Core.Repositories;
 using Members.Data;
 using Members.Models.Domain;
+using System.Configuration;
 
 namespace MembersApi
 {
@@ -20,6 +23,24 @@ namespace MembersApi
             var connectionString = builder.Configuration.GetConnectionString("Members");
 
             // Add services to the container.
+
+            builder.Services
+                .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddMicrosoftIdentityWebApi( builder.Configuration.GetSection("AzureAd") );
+
+            builder.Services.AddCors( options => {
+                options.AddPolicy(name: "MembersCorsPolicy",
+                    policy => {
+                        policy.WithOrigins(
+                            "https://localhost:7102",
+                            "http://localhost:5182");
+                    });
+                options.AddPolicy(name: "AllowEveryonePolicy",
+                    policy => {
+                        policy.AllowAnyOrigin()
+                              .AllowAnyHeader()
+                              .AllowAnyMethod(); } );
+            });
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
@@ -38,6 +59,8 @@ namespace MembersApi
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
+            app.UseCors("AllowEveryonePolicy");
 
             app.UseAuthorization();
             app.MapControllers();

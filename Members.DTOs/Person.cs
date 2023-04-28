@@ -1,4 +1,4 @@
-﻿namespace MembersApi.DTOs
+﻿namespace Members.DTOs
 {
     public class Person : Member
     {

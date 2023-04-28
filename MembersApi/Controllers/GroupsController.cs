@@ -2,6 +2,7 @@
 using Members.Data;
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -11,6 +12,8 @@ namespace MembersApi.Controllers
     [ApiController]
     public class GroupsController : ControllerBase
     {
+        private const string IDENTITY_SCOPE= @"http://schemas.microsoft.com/identity/claims/scope";
+
         private ILogger<PeopleController> Logger { get; }
         private IUnitOfWorkAsync UnitOfWork { get; }
 
@@ -22,32 +25,40 @@ namespace MembersApi.Controllers
         }
 
         // GET: api/<GroupsController>
+        [Authorize]
         [HttpGet]
-        public async Task<IEnumerable<DTOs.Group>> GetAsync()
+        public async Task<IEnumerable<Members.DTOs.Group>> GetAsync()
         {
+            if (User.Claims.FirstOrDefault(c =>
+                (c.Type == IDENTITY_SCOPE) &&
+                (c.Value == "groups.get")) == null)
+            {
+                throw new UnauthorizedAccessException();
+            }
+
             var groups = await UnitOfWork.GetRepositoryAsync<Group>()?.GetAllAsync();
 
-            return groups.Select(x => new DTOs.Group {
+            return groups.Select(x => new Members.DTOs.Group {
                     Id = x.Id, 
                     Name = x.Name,
-                    Members = x.Members?.Select( y => new DTOs.Person { Id = y.Id, Name = y.Name } )
+                    Members = x.Members?.Select( y => new Members.DTOs.Person { Id = y.Id, Name = y.Name } )
                 });
         }
 
         [HttpGet("{id}")]
-        public async Task<DTOs.Group?> GetAsync(int id)
+        public async Task<Members.DTOs.Group?> GetAsync(int id)
         {
             var group = await UnitOfWork.GetRepositoryAsync<Group>().GetAsync( id );
             if (group == null) return null;
 
-            return new DTOs.Group { Id = group.Id, Name = group.Name };
+            return new Members.DTOs.Group { Id = group.Id, Name = group.Name };
         }
 
         [HttpGet("{id}/Members")]
-        public async Task<IEnumerable<DTOs.Person>> GetMembersAsync(int id)
+        public async Task<IEnumerable<Members.DTOs.Person>> GetMembersAsync(int id)
         {
             var group = await UnitOfWork?.GetRepositoryAsync<Group>()?.GetAsync(id);
-            return group?.Members?.Select( y => new DTOs.Person { Id = y.Id, Name = y.Name }) ?? Enumerable.Empty<DTOs.Person>();
+            return group?.Members?.Select( y => new Members.DTOs.Person { Id = y.Id, Name = y.Name }) ?? Enumerable.Empty<Members.DTOs.Person>();
         }
     }
 }
