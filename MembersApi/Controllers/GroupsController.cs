@@ -4,6 +4,8 @@ using Members.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 
+using MembersApi.Extensions;
+
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace MembersApi.Controllers
@@ -17,21 +19,17 @@ namespace MembersApi.Controllers
         private ILogger<PeopleController> Logger { get; }
         private IUnitOfWorkAsync UnitOfWork { get; }
 
-
         public GroupsController(ILogger<PeopleController> logger, IUnitOfWorkAsync unitOfWork)
         {
             Logger = logger;
             UnitOfWork = unitOfWork;
         }
 
-        // GET: api/<GroupsController>
         [Authorize]
         [HttpGet]
         public async Task<IEnumerable<Members.DTOs.Group>> GetAsync()
         {
-            if (User.Claims.FirstOrDefault(c =>
-                (c.Type == IDENTITY_SCOPE) &&
-                (c.Value == "groups.get")) == null)
+            if ( ! User.HasScope( "groups.get" ) )
             {
                 throw new UnauthorizedAccessException();
             }
