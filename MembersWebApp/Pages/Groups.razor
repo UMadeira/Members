@@ -3,11 +3,11 @@
 @using Microsoft.AspNetCore;
 @using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using System.Net.Http.Headers;
 @using Members.DTOs;
 
 @inject HttpClient Http
 @inject IAccessTokenProvider TokenProvider
-@inject NavigationManager Navigation
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
 <AuthorizeView>
@@ -65,15 +65,15 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var username = await GetUsernameAsync();
-
         var result = await TokenProvider.RequestAccessToken(
-            new AccessTokenRequestOptions { Scopes = new[] { "api://ffa91901-68f1-44b8-b1e1-5c4c65b22cb4/groups.get" } });
+            new AccessTokenRequestOptions { Scopes = new[] { 
+                "api://ffa91901-68f1-44b8-b1e1-5c4c65b22cb4/groups.get" 
+            } });
 
         if ( result.TryGetToken( out var token ) )
         {
-            Http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue(
-                "Bearer", token.Value );
+            Http.DefaultRequestHeaders.Authorization = 
+                new AuthenticationHeaderValue( "Bearer", token.Value );
 
             groups = await Http.GetFromJsonAsync<Group[]>("http://localhost:5273/api/Groups");
         }
