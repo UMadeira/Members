@@ -1,9 +1,11 @@
 using Members.Core.Repositories;
 using Members.Models.Domain;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MembersApi.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class PeopleController : ControllerBase
