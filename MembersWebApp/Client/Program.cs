@@ -15,10 +15,15 @@ namespace MembersWebApp
             builder.Services.AddScoped(sp => new HttpClient { 
                 BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
-            builder.Services.AddMsalAuthentication( options => {
-                options.ProviderOptions.AdditionalScopesToConsent.Add("https://graph.microsoft.com/User.Read");
-                options.ProviderOptions.DefaultAccessTokenScopes.Add("api://ffa91901-68f1-44b8-b1e1-5c4c65b22cb4/groups.get");
-                builder.Configuration.Bind("AzureAd", options.ProviderOptions.Authentication);
+            //builder.Services.AddMsalAuthentication( options => {
+            //    options.ProviderOptions.AdditionalScopesToConsent.Add("https://graph.microsoft.com/User.Read");
+            //    //options.ProviderOptions.DefaultAccessTokenScopes.Add("api://ffa91901-68f1-44b8-b1e1-5c4c65b22cb4/groups.get");
+            //    builder.Configuration.Bind("AzureAd-Consumers", options.ProviderOptions.Authentication);
+            //});
+
+            builder.Services.AddMsalAuthentication(options => {
+                options.ProviderOptions.AdditionalScopesToConsent.Add( "https://graph.microsoft.com/User.Read" );
+                builder.Configuration.Bind( "AzureAd", options.ProviderOptions.Authentication );
             });
 
             await builder.Build().RunAsync();

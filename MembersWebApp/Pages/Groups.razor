@@ -67,8 +67,10 @@
     {
         var result = await TokenProvider.RequestAccessToken(
             new AccessTokenRequestOptions { Scopes = new[] { 
-                "api://ffa91901-68f1-44b8-b1e1-5c4c65b22cb4/groups.get" 
+                "api://4b246dd8-e427-4911-b150-7cf977ada3e1/members.get"
             } });
+
+        //var result = await TokenProvider.RequestAccessToken();
 
         if ( result.TryGetToken( out var token ) )
         {

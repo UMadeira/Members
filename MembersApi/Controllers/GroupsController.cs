@@ -10,12 +10,11 @@ using MembersApi.Extensions;
 
 namespace MembersApi.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class GroupsController : ControllerBase
     {
-        private const string IDENTITY_SCOPE= @"http://schemas.microsoft.com/identity/claims/scope";
-
         private ILogger<PeopleController> Logger { get; }
         private IUnitOfWorkAsync UnitOfWork { get; }
 
@@ -25,14 +24,13 @@ namespace MembersApi.Controllers
             UnitOfWork = unitOfWork;
         }
 
-        [Authorize]
         [HttpGet]
         public async Task<IEnumerable<Members.DTOs.Group>> GetAsync()
         {
-            if ( ! User.HasScope( "groups.get" ) )
-            {
-                throw new UnauthorizedAccessException();
-            }
+            //if ( ! User.HasScope( "groups.get" ) )
+            //{
+            //    throw new UnauthorizedAccessException();
+            //}
 
             var groups = await UnitOfWork.GetRepositoryAsync<Group>()?.GetAllAsync();
 
