@@ -32,12 +32,12 @@ namespace MembersApi.Controllers
             //    throw new UnauthorizedAccessException();
             //}
 
-            var groups = await UnitOfWork.GetRepositoryAsync<Group>()?.GetAllAsync();
+            var groups = await UnitOfWork.GetRepositoryAsync<Group>().GetAllAsync();
 
             return groups.Select(x => new Members.DTOs.Group {
                     Id = x.Id, 
                     Name = x.Name,
-                    Members = x.Members?.Select( y => new Members.DTOs.Person { Id = y.Id, Name = y.Name } )
+                    Members = x.Members?.Select( y => y.ToDTO() )
                 });
         }
 
@@ -45,16 +45,14 @@ namespace MembersApi.Controllers
         public async Task<Members.DTOs.Group?> GetAsync(int id)
         {
             var group = await UnitOfWork.GetRepositoryAsync<Group>().GetAsync( id );
-            if (group == null) return null;
-
-            return new Members.DTOs.Group { Id = group.Id, Name = group.Name };
+            return group?.ToDTO();
         }
 
         [HttpGet("{id}/Members")]
         public async Task<IEnumerable<Members.DTOs.Person>> GetMembersAsync(int id)
         {
             var group = await UnitOfWork?.GetRepositoryAsync<Group>()?.GetAsync(id);
-            return group?.Members?.Select( y => new Members.DTOs.Person { Id = y.Id, Name = y.Name }) ?? Enumerable.Empty<Members.DTOs.Person>();
+            return group?.Members?.Select( y => y.ToDTO() ) ?? Enumerable.Empty<Members.DTOs.Person>();
         }
     }
 }

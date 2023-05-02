@@ -42,7 +42,7 @@ namespace MembersApi
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
-            //builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen();
 
             builder.Services.AddDbContext<MembersContext>(options => options.UseSqlServer( connectionString ) );
             builder.Services.AddSingleton<IFactory>(sp => new Factory(typeof(Person), typeof(Group)));
@@ -54,8 +54,8 @@ namespace MembersApi
             // Configure the HTTP request pipeline.
             if ( app.Environment.IsDevelopment() )
             {
-                //app.UseSwagger();
-                //app.UseSwaggerUI();
+                app.UseSwagger();
+                app.UseSwaggerUI();
             }
 
             app.UseCors("AllowEveryonePolicy");
