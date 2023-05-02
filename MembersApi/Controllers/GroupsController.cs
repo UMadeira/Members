@@ -27,10 +27,10 @@ namespace MembersApi.Controllers
         [HttpGet]
         public async Task<IEnumerable<Members.DTOs.Group>> GetAsync()
         {
-            //if ( ! User.HasScope( "groups.get" ) )
-            //{
-            //    throw new UnauthorizedAccessException();
-            //}
+            if ( ! User.HasScope("members.read") )
+            {
+                throw new UnauthorizedAccessException();
+            }
 
             var groups = await UnitOfWork.GetRepositoryAsync<Group>().GetAllAsync();
 
