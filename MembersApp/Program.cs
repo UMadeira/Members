@@ -1,10 +1,12 @@
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.UserSecrets;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 
 using Members.Core.Repositories;
 using Members.Models.Domain;
 using Members.Data;
+using System.Reflection;
 
 namespace MembersApp
 {
@@ -23,7 +25,7 @@ namespace MembersApp
             var config = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json")
-                //.AddUserSecrets<Program>()
+                .AddUserSecrets( Assembly.GetExecutingAssembly(), true )
                 .Build();
 
             var connectionString = config.GetConnectionString("Members");

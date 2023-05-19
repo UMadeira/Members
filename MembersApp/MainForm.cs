@@ -4,7 +4,6 @@ using Members.Models.Commands;
 using Members.Models.Domain;
 using MembersApp.Commands;
 using MembersApp.Extensions;
-using System;
 
 namespace MembersApp
 {
@@ -14,7 +13,7 @@ namespace MembersApp
 
         private ICommandManager CommandManager { get; } = new CommandManager();
 
-        public MainForm(IUnitOfWork unitOfWork)
+        public MainForm( IUnitOfWork unitOfWork )
         {
             InitializeComponent();
 
